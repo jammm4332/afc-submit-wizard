@@ -12,7 +12,6 @@
  * Licence: MIT
  */
 
-/* jshint maxerr: 999 */
 /* globals mw, $, OO */
 /* <nowiki> */
 
@@ -235,7 +234,7 @@ function constructUI() {
 	// Attach
 	$('#afc-submit-wizard-container').empty().append(ui.fieldset.$element, ui.footerLayout.$element);
 
-	mw.track('counter.gadget_afcsw.opened');
+	mw.track('stats.mediawiki_gadget_AFCSW_total', 1, { action: 'opened' });
 
 	// Populate talk page tags for multi-select widget
 	afc.talkTagOptionsLoaded = getJSONPage('Wikipedia:WikiProject Articles for creation/WikiProject templates.json').then(function (data) {
@@ -546,7 +545,7 @@ function setTalkStatus(type, message) {
 function handleSubmit() {
 
 	setMainStatus('notice', msg('status-processing'));
-	mw.track('counter.gadget_afcsw.submit_attempted');
+	mw.track('stats.mediawiki_gadget_AFCSW_total', 1, { action: 'submit_attempted' });
 	ui.submitButton.setDisabled(true);
 	ui.mainStatusLayout.scrollElementIntoView();
 
@@ -583,7 +582,7 @@ function handleSubmit() {
 		setMainStatus('notice', msg('status-saving'));
 		saveDraftPage(draft, text).then(function () {
 			setMainStatus('success', msg('status-redirecting'));
-			mw.track('counter.gadget_afcsw.submit_succeeded');
+			mw.track('stats.mediawiki_gadget_AFCSW_total', 1, { action: 'submit_succeeded' });
 
 			$(window).off('beforeunload', afc.beforeUnload);
 			setTimeout(function () {
@@ -593,11 +592,11 @@ function handleSubmit() {
 			if (code === 'captcha') {
 				ui.fieldset.removeItems([ui.mainStatusLayout, ui.talkStatusLayout]);
 				ui.captchaLayout.scrollElementIntoView();
-				mw.track('counter.gadget_afcsw.submit_captcha');
+				mw.track('stats.mediawiki_gadget_AFCSW_total', 1, { action: 'submit_captcha' });
 			} else {
 				setMainStatus('error', msg('error-saving-main', makeErrorMessage(code, err)));
-				mw.track('counter.gadget_afcsw.submit_failed');
-				mw.track('counter.gadget_afcsw.submit_failed_' + code);
+				mw.track('stats.mediawiki_gadget_AFCSW_total', 1, { action: 'submit_failed' });
+				mw.track('stats.mediawiki_gadget_AFCSW_total', 1, { action: 'submit_failed_' + code });
 			}
 			ui.submitButton.setDisabled(false);
 		});
@@ -629,8 +628,8 @@ function handleSubmit() {
 	}).catch(function (code, err) {
 		setMainStatus('error', msg('error-main', makeErrorMessage(code, err)));
 		ui.submitButton.setDisabled(false);
-		mw.track('counter.gadget_afcsw.submit_failed');
-		mw.track('counter.gadget_afcsw.submit_failed_' + code);
+		mw.track('stats.mediawiki_gadget_AFCSW_total', 1, { action: 'submit_failed' });
+		mw.track('stats.mediawiki_gadget_AFCSW_total', 1, { action: 'submit_failed_' + code });
 	});
 
 }
