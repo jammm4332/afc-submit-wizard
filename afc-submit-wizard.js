@@ -5,7 +5,7 @@
  * Used on [[Wikipedia:Articles for creation/Submitting]].
  * Loaded via [[mw:Snippets/Load JS and CSS by URL]].
  *
- * Edits can be proposed via GitHub (https://github.com/wikimedia-gadgets/afc-submit-wizvalidation-notitleard)
+ * Edits can be proposed via GitHub (https://github.com/wikimedia-gadgets/afc-submit-wizard)
  * or a talk page request.
  *
  * Author: [[User:SD0001]]
@@ -63,6 +63,8 @@ var messages = {
 	"orestopic-helptip": "Pick the topic areas that are relevant",
 	"submit-label": "Submit",
 	"footer-text": "<small>If you are not sure about what to enter in a field, you can skip it. If you need help, you can ask at the <b>[[WP:AFCHD|AfC help desk]]</b> or get live help via <b>[[WP:IRCHELP|IRC]]</b> or <b>[[WP:DISCORD|Discord]]</b>.<br>Facing some issues in using this form? <b>[/w/index.php?title=Wikipedia_talk:WikiProject_Articles_for_creation/Submission_wizard&action=edit&section=new&preloadtitle=Issue%20with%20submission%20form&editintro=Wikipedia_talk:WikiProject_Articles_for_creation/Submission_wizard/editintro Report it]</b>.</small>",
+	"aidisclosure-placeholder": "(eg. \"https://chatgpt.com/share/6a55a5a4-9e00-83e8-97db-f5c281a02067\" or \"I used Google Translate to translate from French Wikipedia\")",
+	"aidisclosure-desc": "<b>If you used an AI chatbot to help create this draft, please share the chat transcript.</b> You can do this by sharing a link (<i>see the [[Wikipedia:Sharing AI chat sessions|how-to guide]]</i>) or by manually copying and pasting the transcript. <b>If you used another AI tool like [[Grammarly]] or [[Google Translate]], or no longer have the transcript, simply describe how you used AI</b>.",
 	"submitting-as": "Submitting as User:$1",
 	"validation-notitle": "Please enter the draft page name",
 	"validation-invalidtitle": "Please check draft title. This title is invalid.",
@@ -186,6 +188,30 @@ function constructUI() {
 				help: msg('orestopic-helptip'),
 				helpInline: true
 			}),
+
+			ui.aiDisclosureDesc = new OO.ui.FieldLayout(new OO.ui.LabelWidget({
+				label: $('<div>')
+					.css("width", "100%")
+					.css("max-width", "50em")
+					.css("text-align", "justify")
+					.append(linkify(msg('aidisclosure-desc')))
+			}), {
+				align: 'top'
+			}),
+			
+			ui.aiDisclosureLayout = new OO.ui.FieldLayout(ui.aiDisclosureInput = new OO.ui.MultilineTextInputWidget({
+				placeholder: msg('aidisclosure-placeholder'),
+				maxLength: 100000,
+				autosize: true,
+				multiline: true,
+				maxRows: 4
+			}), {
+				align: 'top',		
+				helpInline: true,
+			}),
+
+			
+
 
 			ui.submitLayout = new OO.ui.FieldLayout(ui.submitButton = new OO.ui.ButtonWidget({
 				label: msg('submit-label'),
@@ -737,6 +763,20 @@ function prepareDraftText(page) {
 	// put AfC submission template
 	header += '{{subst:submit|1=' + (mw.util.getParamValue('username') || '{{subst:REVISIONUSER}}') + '}}\n';
 
+	// Add AI disclosure
+	var aiDisclosure = ui.aiDisclosureInput.getValue().replaceAll('<nowiki>', '').replaceAll('</nowiki>', '');
+	if (aiDisclosure) { 
+		header += '{{afc comment|1=';
+		header += 'In preparing this draft, I disclose that AI assistance was used as follows:';
+		if (aiDisclosure.length > 1500) {
+			header += '{{Hidden begin}}<nowiki>' + aiDisclosure + '</nowiki>{{hidden end}}';			
+		} else {
+			header += '<nowiki>' + aiDisclosure + '</nowiki>';			
+		}
+		header +=  '~~' + '~~}}\n';
+	}
+
+	
 	// insert everything to the top
 	text = header + text;
 	debug(text);
