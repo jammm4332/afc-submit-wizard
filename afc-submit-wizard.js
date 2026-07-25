@@ -764,7 +764,7 @@ function prepareDraftText(page) {
 	var aiDisclosure = ui.aiDisclosureInput.getValue().replaceAll('<nowiki>', '').replaceAll('</nowiki>', '');
 	if (aiDisclosure) { 
 		header += '{{afc comment|1=';
-		header += 'In preparing this draft, I disclose that AI assistance was used as follows:';
+		header += 'In preparing this draft, I disclose that AI assistance was used as follows: ';
 		if (aiDisclosure.length > 1500) {
 			header += '{{Hidden begin}}<nowiki>' + aiDisclosure + '</nowiki>{{hidden end}}';			
 		} else {
