@@ -770,6 +770,7 @@ function prepareDraftText(page) {
 		} else {
 			header += '<nowiki>' + aiDisclosure + '</nowiki>';			
 		}
+		header += ' <!--Comment automatically added by the Submission Wizard--> ';
 		header +=  '~~' + '~~}}\n';
 	}
 
