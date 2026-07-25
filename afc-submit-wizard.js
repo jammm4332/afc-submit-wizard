@@ -210,9 +210,6 @@ function constructUI() {
 				helpInline: true,
 			}),
 
-			
-
-
 			ui.submitLayout = new OO.ui.FieldLayout(ui.submitButton = new OO.ui.ButtonWidget({
 				label: msg('submit-label'),
 				flags: [ 'progressive', 'primary' ],
@@ -776,7 +773,6 @@ function prepareDraftText(page) {
 		header +=  '~~' + '~~}}\n';
 	}
 
-	
 	// insert everything to the top
 	text = header + text;
 	debug(text);
